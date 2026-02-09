@@ -7,6 +7,11 @@
     </div>
     <h2 class="text-2xl font-bold text-content mb-2">Analyzing Repository</h2>
     <p class="text-content-secondary text-sm">{{ message() }}</p>
+    @if (isAuditing()) {
+      <p class="text-content-muted text-xs mt-2 animate-slide-up">
+        Deep audit can take up to 30–60 seconds. Please hold tight.
+      </p>
+    }
   </div>
 
   <!-- Progress Bar -->
@@ -18,7 +23,7 @@
   </div>
 
   <!-- Stage Indicators -->
-  <div class="grid grid-cols-3 gap-x-4 gap-y-5 sm:grid-cols-6">
+  <div class="grid grid-cols-3 gap-x-4 gap-y-5 sm:grid-cols-5">
     @for (stage of stages; track stage) {
       <div class="flex flex-col items-center gap-2">
         <div

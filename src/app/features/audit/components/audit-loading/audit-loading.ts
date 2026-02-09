@@ -11,7 +11,6 @@ export class AuditLoading {
 
   protected readonly stages: AuditStatus[] = [
     'QUEUED',
-    'CLONING',
     'READING',
     'VALIDATING_DESCRIPTION',
     'AUDITING',
@@ -20,12 +19,13 @@ export class AuditLoading {
 
   protected readonly stageLabels: Record<string, string> = {
     QUEUED: 'Queued',
-    CLONING: 'Cloning',
     READING: 'Reading',
     VALIDATING_DESCRIPTION: 'Validating',
     AUDITING: 'Auditing',
     VALIDATING_STRUCTURE: 'Finalizing',
   };
+
+  protected readonly isAuditing = computed(() => this.status() === 'AUDITING');
 
   protected readonly currentStageIndex = computed(() => this.stages.indexOf(this.status()));
 
