@@ -6,7 +6,7 @@
     (click)="toggle()"
     class="w-full px-5 py-4 flex items-start gap-4 text-left cursor-pointer"
   >
-    <div class="flex-shrink-0 mt-1">
+    <div class="shrink-0 mt-1">
       <span [class]="severityDotClass()" class="block w-2.5 h-2.5 rounded-full"></span>
     </div>
 
@@ -32,7 +32,7 @@
     </div>
 
     <svg
-      class="w-5 h-5 text-content-muted transition-transform duration-200 flex-shrink-0 mt-1"
+      class="w-5 h-5 text-content-muted transition-transform duration-200 shrink-0 mt-1"
       [class.rotate-180]="expanded()"
       fill="none"
       stroke="currentColor"
