@@ -25,8 +25,6 @@ export class AuditLoading {
     VALIDATING_STRUCTURE: 'Finalizing',
   };
 
-  protected readonly isAuditing = computed(() => this.status() === 'AUDITING');
-
   protected readonly currentStageIndex = computed(() => this.stages.indexOf(this.status()));
 
   protected readonly progress = computed(() => {
