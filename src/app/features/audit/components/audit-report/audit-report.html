@@ -1,0 +1,165 @@
+<div class="animate-fade-in">
+  <!-- ─── Report Header ─── -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+    <div>
+      <h2 class="text-2xl font-bold text-content tracking-tight mb-1">Audit Report</h2>
+      <p class="text-sm text-content-muted">
+        {{ report().repositoryUrl }}
+        <span class="mx-1.5 text-border-light">&middot;</span>
+        {{ report().auditTimestamp | date: 'MMM d, y, h:mm a' }}
+      </p>
+    </div>
+    <button
+      (click)="downloadPdf()"
+      class="print-hidden inline-flex items-center gap-2 px-4 py-2.5 bg-surface hover:bg-surface-hover text-content text-sm font-medium rounded-lg border border-border-light transition-all duration-200 cursor-pointer"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+      Export PDF
+    </button>
+  </div>
+
+  <!-- ─── Project Summary ─── -->
+  <div class="bg-surface rounded-xl border border-border-light p-5 mb-8">
+    <h3 class="text-xs font-semibold text-content-muted uppercase tracking-wider mb-2">
+      Project Summary
+    </h3>
+    <p class="text-sm text-content-secondary leading-relaxed">{{ report().projectSummary }}</p>
+  </div>
+
+  <!-- ─── Score + Issue Summary ─── -->
+  <div class="grid lg:grid-cols-3 gap-6 mb-8">
+    <!-- Score Gauge -->
+    <div
+      class="bg-surface rounded-xl border border-border-light p-6 flex items-center justify-center"
+    >
+      <app-score-gauge [score]="report().overallScore" />
+    </div>
+
+    <!-- Issue Summary Cards -->
+    <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3 content-center">
+      <!-- Critical -->
+      <button
+        (click)="setFilter('CRITICAL')"
+        class="rounded-xl border p-4 text-center transition-all duration-200 cursor-pointer"
+        [class]="
+          activeSeverityFilter() === 'CRITICAL'
+            ? 'bg-critical/15 border-critical/30 ring-2 ring-critical/20'
+            : 'bg-critical/5 border-critical/15 hover:bg-critical/10'
+        "
+      >
+        <p class="text-3xl font-bold text-critical">{{ report().issueSummary.critical }}</p>
+        <p class="text-xs font-medium text-critical/70 uppercase tracking-wider mt-1">Critical</p>
+      </button>
+
+      <!-- High -->
+      <button
+        (click)="setFilter('HIGH')"
+        class="rounded-xl border p-4 text-center transition-all duration-200 cursor-pointer"
+        [class]="
+          activeSeverityFilter() === 'HIGH'
+            ? 'bg-high/15 border-high/30 ring-2 ring-high/20'
+            : 'bg-high/5 border-high/15 hover:bg-high/10'
+        "
+      >
+        <p class="text-3xl font-bold text-high">{{ report().issueSummary.high }}</p>
+        <p class="text-xs font-medium text-high/70 uppercase tracking-wider mt-1">High</p>
+      </button>
+
+      <!-- Medium -->
+      <button
+        (click)="setFilter('MEDIUM')"
+        class="rounded-xl border p-4 text-center transition-all duration-200 cursor-pointer"
+        [class]="
+          activeSeverityFilter() === 'MEDIUM'
+            ? 'bg-medium/15 border-medium/30 ring-2 ring-medium/20'
+            : 'bg-medium/5 border-medium/15 hover:bg-medium/10'
+        "
+      >
+        <p class="text-3xl font-bold text-medium">{{ report().issueSummary.medium }}</p>
+        <p class="text-xs font-medium text-medium/70 uppercase tracking-wider mt-1">Medium</p>
+      </button>
+
+      <!-- Low -->
+      <button
+        (click)="setFilter('LOW')"
+        class="rounded-xl border p-4 text-center transition-all duration-200 cursor-pointer"
+        [class]="
+          activeSeverityFilter() === 'LOW'
+            ? 'bg-low/15 border-low/30 ring-2 ring-low/20'
+            : 'bg-low/5 border-low/15 hover:bg-low/10'
+        "
+      >
+        <p class="text-3xl font-bold text-low">{{ report().issueSummary.low }}</p>
+        <p class="text-xs font-medium text-low/70 uppercase tracking-wider mt-1">Low</p>
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── Issues Section ─── -->
+  <section class="mb-8">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
+      <h3 class="text-lg font-semibold text-content flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
+        </div>
+        Issues
+        <span class="text-sm font-normal text-content-muted">
+          ({{ report().issueSummary.totalIssues }})
+        </span>
+      </h3>
+
+      <!-- Severity Filter Tabs -->
+      <div class="flex gap-1.5 print-hidden">
+        @for (filter of severityFilters; track filter) {
+          <button
+            (click)="setFilter(filter)"
+            class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer"
+            [class]="
+              activeSeverityFilter() === filter
+                ? 'bg-accent text-white shadow-sm'
+                : 'bg-surface text-content-muted hover:text-content hover:bg-surface-hover'
+            "
+          >
+            {{ filter === 'ALL' ? 'All' : (filter | titlecase) }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      @for (issue of filteredIssues(); track issue.id) {
+        <app-issue-card [issue]="issue" />
+      } @empty {
+        <div
+          class="text-center py-10 text-content-muted text-sm bg-surface rounded-xl border border-border-light"
+        >
+          No issues found for the selected severity filter.
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ─── Architecture Review ─── -->
+  <div class="mb-8">
+    <app-architecture-review [review]="report().architectureReview" />
+  </div>
+
+  <!-- ─── Prevention Guide ─── -->
+  <div class="mb-8">
+    <app-prevention-guide [guide]="report().preventionGuide" />
+  </div>
+</div>

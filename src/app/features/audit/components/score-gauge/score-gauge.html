@@ -1,0 +1,44 @@
+<div class="flex flex-col items-center gap-3">
+  <div class="relative" [style.width.px]="size()" [style.height.px]="size()">
+    <svg
+      class="transform -rotate-90"
+      [attr.width]="size()"
+      [attr.height]="size()"
+    >
+      <!-- Background circle -->
+      <circle
+        fill="none"
+        stroke="var(--color-surface)"
+        [attr.cx]="size() / 2"
+        [attr.cy]="size() / 2"
+        [attr.r]="radius()"
+        stroke-width="10"
+      />
+      <!-- Progress arc -->
+      <circle
+        fill="none"
+        [attr.stroke]="strokeColorHex()"
+        [attr.cx]="size() / 2"
+        [attr.cy]="size() / 2"
+        [attr.r]="radius()"
+        stroke-width="10"
+        stroke-linecap="round"
+        [attr.stroke-dasharray]="circumference()"
+        [attr.stroke-dashoffset]="dashOffset()"
+        style="transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1)"
+      />
+    </svg>
+    <div class="absolute inset-0 flex flex-col items-center justify-center">
+      <span [class]="textColorClass()" class="text-4xl font-extrabold leading-none">
+        {{ score() }}
+      </span>
+      <span class="text-[11px] text-content-muted font-medium mt-1">/ 100</span>
+    </div>
+  </div>
+  <span
+    [class]="textColorClass()"
+    class="text-sm font-semibold uppercase tracking-widest"
+  >
+    {{ scoreLabel() }}
+  </span>
+</div>

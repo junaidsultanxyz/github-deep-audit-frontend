@@ -1,0 +1,54 @@
+@switch (phase()) {
+  <!-- Idle — Show input form -->
+  @case ('idle') {
+    <div class="min-h-[calc(100vh-65px)] flex items-center justify-center px-6 py-12">
+      <app-audit-form (submitAudit)="onSubmitAudit($event)" />
+    </div>
+  }
+
+  <!-- Submitting / Polling — Show loading state -->
+  @case ('submitting') {
+    <div class="min-h-[calc(100vh-65px)] flex items-center justify-center px-6 py-12">
+      <app-audit-loading [status]="auditStatus()" [message]="statusMessage()" />
+    </div>
+  }
+  @case ('polling') {
+    <div class="min-h-[calc(100vh-65px)] flex items-center justify-center px-6 py-12">
+      <app-audit-loading [status]="auditStatus()" [message]="statusMessage()" />
+    </div>
+  }
+
+  <!-- Error — Show error with retry -->
+  @case ('error') {
+    <div class="min-h-[calc(100vh-65px)] flex items-center justify-center px-6 py-12">
+      <app-audit-error [message]="errorMessage()" (reset)="onReset()" />
+    </div>
+  }
+
+  <!-- Complete — Show full report -->
+  @case ('complete') {
+    @if (report(); as r) {
+      <div class="w-full max-w-5xl mx-auto px-6 py-10">
+        <app-audit-report [report]="r" />
+
+        <!-- Reset Button -->
+        <div class="mt-10 text-center print-hidden">
+          <button
+            (click)="onReset()"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-surface hover:bg-surface-hover text-content-secondary text-sm font-medium rounded-lg border border-border-light transition-all duration-200 cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            Audit Another Repository
+          </button>
+        </div>
+      </div>
+    }
+  }
+}

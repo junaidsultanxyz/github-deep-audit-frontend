@@ -1,0 +1,57 @@
+<div class="w-full max-w-xl mx-auto text-center animate-fade-in">
+  <!-- Spinner -->
+  <div class="mb-8">
+    <div class="w-16 h-16 mx-auto mb-6 relative">
+      <div class="absolute inset-0 rounded-full border-4 border-surface"></div>
+      <div class="absolute inset-0 rounded-full border-4 border-accent border-t-transparent animate-spin"></div>
+    </div>
+    <h2 class="text-2xl font-bold text-content mb-2">Analyzing Repository</h2>
+    <p class="text-content-secondary text-sm">{{ message() }}</p>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="w-full bg-surface rounded-full h-1.5 mb-10 overflow-hidden">
+    <div
+      class="h-full bg-gradient-to-r from-accent to-accent-hover rounded-full transition-all duration-700 ease-out"
+      [style.width.%]="progress()"
+    ></div>
+  </div>
+
+  <!-- Stage Indicators -->
+  <div class="grid grid-cols-3 gap-x-4 gap-y-5 sm:grid-cols-6">
+    @for (stage of stages; track stage) {
+      <div class="flex flex-col items-center gap-2">
+        <div
+          class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300"
+          [class.bg-success]="isStageComplete(stage)"
+          [class.text-white]="isStageComplete(stage) || isStageActive(stage)"
+          [class.bg-accent]="isStageActive(stage)"
+          [class.animate-pulse]="isStageActive(stage)"
+          [class.bg-surface]="!isStageComplete(stage) && !isStageActive(stage)"
+          [class.text-content-muted]="!isStageComplete(stage) && !isStageActive(stage)"
+        >
+          @if (isStageComplete(stage)) {
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          } @else {
+            {{ stageIndex(stage) + 1 }}
+          }
+        </div>
+        <span
+          class="text-[11px] font-medium leading-tight"
+          [class.text-accent]="isStageActive(stage)"
+          [class.text-success]="isStageComplete(stage)"
+          [class.text-content-muted]="!isStageActive(stage) && !isStageComplete(stage)"
+        >
+          {{ stageLabels[stage] }}
+        </span>
+      </div>
+    }
+  </div>
+</div>
